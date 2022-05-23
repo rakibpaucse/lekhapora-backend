@@ -17,10 +17,7 @@ const {dataBaseConnection} = require('./database');
 // 
 
 
-// const store = new MongoDBStore({
-//     uri: MONGO_URI,
-//     collection: 'users'
-//   });
+
 
 const middleware = [
     morgan('dev'),
@@ -63,51 +60,3 @@ dataBaseConnection.connect((err) => {
 
 
 
-// mongoose.connect(MONGO_URI,{useNewUrlParser: true , useUnifiedTopology: true})
-//             .then( () => {
-//                 app.listen( process.env.PORT || PORT , () => {
-//                     console.log(`Server is running on port ${PORT} and dataBase Connected`)
-//                 })
-//             })
-//             .catch( (e) => {
-//                 console.log(e)
-//             })
-
-// const connection = mysql.createConnection({
-//     host: '103.163.246.66',
-//     user: 'shaheena_lekhapora_user',
-//     password: 'shaheena_lekhapora_user',
-//     database: 'shaheena_lekhapora',
-//     // port:"3000",
-//     // multipleStatements: true
-//   })
-  
-
- 
-//   connection.query('SELECT * FROM courses', (err, rows, fields) => {
-//     if (err) throw err
-  
-//     console.log('The solution is: ', rows)
-//   })
-  
-//   connection.end()
-
-
-// const dbConfig = {
-//   host: '103.163.246.66',
-//   user: 'shaheena_lekhapora_user',
-//   password: 'shaheena_lekhapora_user',
-//   database: 'shaheena_lekhapora',
-//   port : 3306
-// }
- 
-// dbConfig.connect()
-
-// async function query(sql, params) {
-//   const connection = await mysql.createConnection(dbConfig);
-//   const [results, ] = await connection.execute(sql, params);
- 
-//   return results;
-// }
-
-// console.log(query('SELECT * FROM assignments'),[])
