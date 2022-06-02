@@ -3,5 +3,5 @@
 ### `   What I learn  `
 
 
-*connect expressJS with MYSQL 
+--> Connect expressJS with MYSQL 
 
