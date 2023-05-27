@@ -15,6 +15,12 @@ const routes = [
         handler : (req , res) => { 
             res.json({ msg: 'All Good...'})
         }
+    },
+     {
+        path: '/about',
+        handler : (req , res) => { 
+            res.json({ msg: 'All Good about...'})
+        }
     }
 ]
 
