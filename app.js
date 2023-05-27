@@ -3,24 +3,17 @@ var cors = require('cors');
 const PORT = 8081;
 const app = express()
 const morgan = require('morgan')
-const mongoose = require('mongoose')
 const session = require('express-session')
-const MongoDBStore = require('connect-mongodb-session')(session);
-const MONGO_URI = `mongodb+srv://lekhapora:lekhapora@cluster0.nblcl.mongodb.net/lekhapora?retryWrites=true&w=majority`
-const mysql = require('mysql')
-// const mysql = require('mysql2/promise');
 
 const setRoutes = require('./routers/controlRouter')
+// const {dataBaseConnection} = require('./database');
 
-const {dataBaseConnection} = require('./database');
+const mysql = require('mysql')
+const dotenv = require("dotenv").config()
 
-// 
 
+var dataBaseConnection;
 
-// const store = new MongoDBStore({
-//     uri: MONGO_URI,
-//     collection: 'users'
-//   });
 
 const middleware = [
     morgan('dev'),
@@ -31,7 +24,6 @@ const middleware = [
         secret : process.env.SECRET_KEY || 'SECRET_KEY',
         resave: false,
         saveUninitialized : false,
-        // store
     }),
 ]
 
@@ -45,69 +37,46 @@ app.use((req , res , next) => {
     next(err)
 })
 
+app.listen( process.env.PORT || PORT , () => {
+    console.log(`Server is running on port ${PORT}`)
+})
 
+function handleDisconnect() {
 
+    dataBaseConnection = mysql.createConnection({
+        host: process.env.DATABASE_HOST,
+        user: process.env.DATABASE_USER,
+        password: process.env.DATABASE_PASSWORD,
+        database: process.env.DATABASE_NAME,
+    } , { multipleStatements: true })
 
+    dataBaseConnection.connect((err) => {
+        if(err){
+            console.log("error when connecting to db:", err);
+            setTimeout(handleDisconnect, 2000);
+        }else{
+            console.log(`and dataBase Connected`)
+        }
+      })
 
+        // setInterval(function () {
+        //     dataBaseConnection.query('SELECT 1', (error, results, fields)=> {
+        //         console.log(results);
+        //     });
+        // }, 5000);
 
-dataBaseConnection.connect((err) => {
-    if(err){
-      console.log(err);
-    }else{
-        app.listen( process.env.PORT || PORT , () => {
-            console.log(`Server is running on port ${PORT} and dataBase Connected`)
-        })
-    }
-  })
+      dataBaseConnection.on("error", function(err) {
 
+        console.log("db error...........", err); handleDisconnect();
+        if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+          handleDisconnect();
+        }else {
+            console.log('++++++++++++++++++++++++++++++++++++++++++++++++');
+          throw err;
+        }
+      });
 
+}
 
+handleDisconnect();
 
-// mongoose.connect(MONGO_URI,{useNewUrlParser: true , useUnifiedTopology: true})
-//             .then( () => {
-//                 app.listen( process.env.PORT || PORT , () => {
-//                     console.log(`Server is running on port ${PORT} and dataBase Connected`)
-//                 })
-//             })
-//             .catch( (e) => {
-//                 console.log(e)
-//             })
-
-// const connection = mysql.createConnection({
-//     host: '103.163.246.66',
-//     user: 'shaheena_lekhapora_user',
-//     password: 'shaheena_lekhapora_user',
-//     database: 'shaheena_lekhapora',
-//     // port:"3000",
-//     // multipleStatements: true
-//   })
-  
-
- 
-//   connection.query('SELECT * FROM courses', (err, rows, fields) => {
-//     if (err) throw err
-  
-//     console.log('The solution is: ', rows)
-//   })
-  
-//   connection.end()
-
-
-// const dbConfig = {
-//   host: '103.163.246.66',
-//   user: 'shaheena_lekhapora_user',
-//   password: 'shaheena_lekhapora_user',
-//   database: 'shaheena_lekhapora',
-//   port : 3306
-// }
- 
-// dbConfig.connect()
-
-// async function query(sql, params) {
-//   const connection = await mysql.createConnection(dbConfig);
-//   const [results, ] = await connection.execute(sql, params);
- 
-//   return results;
-// }
-
-// console.log(query('SELECT * FROM assignments'),[])
